@@ -4,6 +4,7 @@ import { getServerSession, type DefaultSession, type NextAuthOptions } from 'nex
 import DiscordProvider from 'next-auth/providers/discord';
 import GoogleProvider from 'next-auth/providers/google';
 import EmailProvider from 'next-auth/providers/email';
+import AuthentikProvider from 'next-auth/providers/authentik';
 
 import { env } from '~/env';
 import { db } from '~/server/db';
@@ -141,6 +142,16 @@ function getProviders() {
           return Math.random().toString(36).substring(2, 7).toLowerCase();
         },
       }),
+    );
+  }
+
+  if (env.AUTHENTIK_OIDC_ENABLED) {
+    providersList.push(
+      AuthentikProvider({
+        clientId: env.AUTHENTIK_ID,
+        clientSecret: env.AUTHENTIK_SECRET,
+        issuer: env.AUTHENTIK_ISSUER,
+      })
     );
   }
 
